@@ -8,6 +8,7 @@ export const deleteStudent = (id) => api.delete(`/admin/students/${id}`)
 export const importStudents = (formData) => api.post('/admin/students/import', formData, { headers: { 'Content-Type': 'multipart/form-data' } })
 
 export const updateGraduationResult = (id, data) => api.put(`/admin/students/${id}/graduation-result`, data)
+export const bulkUpdateGraduationResults = (data) => api.put(`/admin/students/graduation-results/bulk`, data)
 
 export const getRequirements = (id) => api.get(`/admin/students/${id}/requirements`)
 export const updateRequirement = (id, reqTypeId, data) => api.put(`/admin/students/${id}/requirements/${reqTypeId}`, data)

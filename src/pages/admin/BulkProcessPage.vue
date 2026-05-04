@@ -3,7 +3,7 @@ import { ref, onMounted, watch } from 'vue'
 import { getPeriods } from '@/services/masterService'
 import { getClasses } from '@/services/masterService'
 import { getRequirementTypes } from '@/services/masterService'
-import { getStudents, bulkUpdateRequirements, uploadSkl } from '@/services/studentService'
+import { getStudents, bulkUpdateRequirements, bulkUpdateGraduationResults, uploadSkl } from '@/services/studentService'
 import { getErrorMessage, getStatusBadge, getStatusLabel } from '@/utils/helpers'
 import { Filter, Save, Upload, CheckCircle, AlertCircle, FileText } from 'lucide-vue-next'
 
@@ -100,20 +100,35 @@ const saveAllRequirements = async () => {
   error.value = ''
   
   try {
-    const updates = []
+    const reqUpdates = []
+    const gradUpdates = []
+    
     students.value.forEach(s => {
+      // Requirements updates
       requirementTypes.value.forEach(rt => {
         const isChecked = requirementCheckboxes.value[s.id] && requirementCheckboxes.value[s.id][rt.id]
-        updates.push({
+        reqUpdates.push({
           studentId: s.id,
           requirementTypeId: rt.id,
           status: isChecked ? 'COMPLETED' : 'PENDING'
         })
       })
+      
+      // Graduation Status updates
+      if (s.graduationResult) {
+        gradUpdates.push({
+          studentId: s.id,
+          status: s.graduationResult.status || 'DITUNDA'
+        })
+      }
     })
     
-    await bulkUpdateRequirements({ updates })
-    showToast('Seluruh syarat berhasil disimpan!')
+    await Promise.all([
+      bulkUpdateRequirements({ updates: reqUpdates }),
+      bulkUpdateGraduationResults({ updates: gradUpdates })
+    ])
+    
+    showToast('Seluruh data berhasil disimpan!')
     await loadStudents() // refresh
   } catch (e) {
     error.value = getErrorMessage(e)
@@ -165,7 +180,7 @@ const handleFileUpload = async (studentId, event) => {
       <button v-if="students.length > 0" @click="saveAllRequirements" :disabled="saving" class="btn-primary flex items-center gap-2 px-6 py-2.5">
         <span v-if="saving" class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
         <Save v-else class="w-4 h-4" />
-        {{ saving ? 'Menyimpan...' : 'Simpan Semua Syarat' }}
+        {{ saving ? 'Menyimpan...' : 'Simpan Semua Data' }}
       </button>
     </div>
 
@@ -209,6 +224,8 @@ const handleFileUpload = async (studentId, event) => {
               <th class="py-3 px-4 font-semibold text-slate-600 w-12 text-center">No</th>
               <th class="py-3 px-4 font-semibold text-slate-600 min-w-[200px]">Nama Siswa</th>
               
+              <th class="py-3 px-4 font-semibold text-slate-600 min-w-[150px]">Status Lulus</th>
+              
               <!-- Dynamic Requirements Columns -->
               <th v-for="rt in requirementTypes" :key="rt.id" class="py-3 px-4 font-semibold text-slate-600 text-center min-w-[100px]">
                 {{ rt.name }}
@@ -223,6 +240,16 @@ const handleFileUpload = async (studentId, event) => {
               <td class="py-3 px-4">
                 <div class="font-medium text-slate-800">{{ student.name }}</div>
                 <div class="text-xs text-slate-400">{{ student.nisn }}</div>
+              </td>
+              
+              <!-- Graduation Status -->
+              <td class="py-3 px-4">
+                <select v-if="student.graduationResult" v-model="student.graduationResult.status" class="w-full px-2 py-1.5 text-sm bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 font-medium" :class="student.graduationResult.status === 'LULUS' ? 'text-emerald-600' : student.graduationResult.status === 'TIDAK_LULUS' ? 'text-red-600' : 'text-amber-600'">
+                  <option value="DITUNDA" class="text-amber-600 font-medium">Ditunda</option>
+                  <option value="LULUS" class="text-emerald-600 font-medium">Lulus</option>
+                  <option value="TIDAK_LULUS" class="text-red-600 font-medium">Tidak Lulus</option>
+                </select>
+                <span v-else class="text-xs text-slate-400 italic">Data belum digenerate</span>
               </td>
               
               <!-- Dynamic Checkboxes -->
