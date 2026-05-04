@@ -1,7 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { checkSkl, getDownloadUrl } from '@/services/sklService'
-import { getSchoolProfile } from '@/services/masterService'
+import { checkSkl, getDownloadUrl, getPublicSchoolProfile } from '@/services/sklService'
 import { getErrorMessage } from '@/utils/helpers'
 import { Search, CheckCircle, XCircle, AlertCircle, Download, ShieldCheck, FileText, ArrowRight } from 'lucide-vue-next'
 import { useRouter } from 'vue-router'
@@ -15,7 +14,7 @@ const schoolName = ref('E-SKL Digital')
 
 onMounted(async () => {
   try {
-    const res = await getSchoolProfile()
+    const res = await getPublicSchoolProfile()
     if (res.data.data && res.data.data.schoolName) {
       schoolName.value = res.data.data.schoolName
     }
