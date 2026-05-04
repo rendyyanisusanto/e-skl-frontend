@@ -11,6 +11,7 @@ export const updateGraduationResult = (id, data) => api.put(`/admin/students/${i
 
 export const getRequirements = (id) => api.get(`/admin/students/${id}/requirements`)
 export const updateRequirement = (id, reqTypeId, data) => api.put(`/admin/students/${id}/requirements/${reqTypeId}`, data)
+export const bulkUpdateRequirements = (data) => api.put(`/admin/students/requirements/bulk`, data)
 export const generateRequirements = (id) => api.post(`/admin/students/${id}/requirements/generate`)
 
 export const uploadSkl = (id, formData) => api.post(`/admin/students/${id}/skl/upload`, formData, { headers: { 'Content-Type': 'multipart/form-data' } })

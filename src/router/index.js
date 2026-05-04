@@ -22,6 +22,7 @@ const routes = [
       { path: 'classes', name: 'Classes', component: () => import('@/pages/admin/ClassesPage.vue') },
       { path: 'students', name: 'Students', component: () => import('@/pages/admin/StudentsPage.vue') },
       { path: 'students/:id', name: 'StudentDetail', component: () => import('@/pages/admin/StudentDetailPage.vue') },
+      { path: 'bulk-process', name: 'BulkProcess', component: () => import('@/pages/admin/BulkProcessPage.vue') },
       { path: 'requirement-types', name: 'RequirementTypes', component: () => import('@/pages/admin/RequirementTypesPage.vue') },
       { path: 'download-logs', name: 'DownloadLogs', component: () => import('@/pages/admin/DownloadLogsPage.vue') },
       { path: 'verification-logs', name: 'VerificationLogs', component: () => import('@/pages/admin/VerificationLogsPage.vue') },

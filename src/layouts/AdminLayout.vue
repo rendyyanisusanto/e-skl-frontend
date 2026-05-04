@@ -5,7 +5,7 @@ import { useAuthStore } from '@/stores/authStore'
 import { logout } from '@/services/authService'
 import {
   LayoutDashboard, GraduationCap, BookOpen, School, Users,
-  ClipboardList, Download, ShieldCheck, Building2, LogOut, Menu, X, ChevronRight
+  ClipboardList, Download, ShieldCheck, Building2, LogOut, Menu, X, ChevronRight, ListChecks
 } from 'lucide-vue-next'
 
 const router = useRouter()
@@ -20,6 +20,7 @@ const navItems = [
   { label: 'Jurusan', to: '/admin/majors', icon: BookOpen },
   { label: 'Kelas', to: '/admin/classes', icon: School },
   { label: 'Data Siswa', to: '/admin/students', icon: Users },
+  { label: 'Proses Massal', to: '/admin/bulk-process', icon: ListChecks },
   { label: 'Syarat SKL', to: '/admin/requirement-types', icon: ClipboardList },
   { label: 'Log Download', to: '/admin/download-logs', icon: Download },
   { label: 'Log Verifikasi', to: '/admin/verification-logs', icon: ShieldCheck },
