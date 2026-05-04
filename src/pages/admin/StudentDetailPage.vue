@@ -73,7 +73,7 @@ const goToStudent = (id) => {
 }
 
 watch(() => route.params.id, (newId) => {
-  if (newId && route.name === 'AdminStudentDetail') load()
+  if (newId && route.name === 'StudentDetail') load()
 })
 
 onMounted(load)
