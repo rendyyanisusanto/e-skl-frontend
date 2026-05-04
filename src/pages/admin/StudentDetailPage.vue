@@ -92,13 +92,17 @@ onMounted(load)
           </div>
           <BaseBadge :status="student.graduationResult?.status || 'DITUNDA'" />
         </div>
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm border-t border-slate-100 pt-4 mt-2">
+          <div><p class="text-slate-400 text-xs">NISN</p><p class="font-medium">{{ student.nisn }}</p></div>
+          <div><p class="text-slate-400 text-xs">NIS</p><p class="font-medium">{{ student.nis || '-' }}</p></div>
           <div><p class="text-slate-400 text-xs">Kelas</p><p class="font-medium">{{ student.class?.name || '-' }}</p></div>
           <div><p class="text-slate-400 text-xs">Jurusan</p><p class="font-medium">{{ student.major?.name || '-' }}</p></div>
           <div><p class="text-slate-400 text-xs">Jenis Kelamin</p><p class="font-medium">{{ student.gender === 'L' ? 'Laki-laki' : student.gender === 'P' ? 'Perempuan' : '-' }}</p></div>
+          <div><p class="text-slate-400 text-xs">Tempat Lahir</p><p class="font-medium">{{ student.birthPlace || student.birth_place || '-' }}</p></div>
           <div><p class="text-slate-400 text-xs">Tanggal Lahir</p><p class="font-medium">{{ formatDate(student.birthDate || student.birth_date) }}</p></div>
-          <div><p class="text-slate-400 text-xs">Orang Tua</p><p class="font-medium">{{ student.parentName || student.parent_name || '-' }}</p></div>
           <div><p class="text-slate-400 text-xs">No. HP</p><p class="font-medium">{{ student.phone || '-' }}</p></div>
+          <div><p class="text-slate-400 text-xs">Nama Orang Tua</p><p class="font-medium">{{ student.parentName || student.parent_name || '-' }}</p></div>
+          <div class="col-span-2 md:col-span-3"><p class="text-slate-400 text-xs">Alamat</p><p class="font-medium">{{ student.address || '-' }}</p></div>
         </div>
         <div class="mt-4">
           <button @click="openResult" class="btn-primary btn-sm">Ubah Status Kelulusan</button>
