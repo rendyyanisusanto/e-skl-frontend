@@ -1,12 +1,12 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getStudent, updateStudent, updateGraduationResult, getRequirements, updateRequirement, uploadSkl, getSkl, updateSkl, deleteSkl } from '@/services/studentService'
 import { getErrorMessage, getStatusBadge, getStatusLabel, formatFileSize } from '@/utils/helpers'
 import { formatDate } from '@/utils/formatDate'
 import BaseBadge from '@/components/common/BaseBadge.vue'
 import BaseModal from '@/components/common/BaseModal.vue'
-import { ArrowLeft, Upload, FileText, CheckCircle, XCircle, Minus } from 'lucide-vue-next'
+import { ArrowLeft, Upload, FileText, CheckCircle, XCircle, Minus, ChevronLeft, ChevronRight } from 'lucide-vue-next'
 
 const route = useRoute()
 const router = useRouter()
@@ -68,6 +68,14 @@ const voidSkl = async () => {
   catch (e) { error.value = getErrorMessage(e) }
 }
 
+const goToStudent = (id) => {
+  router.push(`/admin/students/${id}`)
+}
+
+watch(() => route.params.id, (newId) => {
+  if (newId && route.name === 'AdminStudentDetail') load()
+})
+
 onMounted(load)
 </script>
 
@@ -75,9 +83,20 @@ onMounted(load)
   <div>
     <Transition name="fade"><div v-if="toast" class="fixed top-4 right-4 z-50 bg-emerald-600 text-white px-5 py-3 rounded-xl shadow-lg text-sm">{{ toast }}</div></Transition>
 
-    <button @click="router.back()" class="flex items-center gap-2 text-slate-500 hover:text-slate-800 text-sm mb-4 transition-colors">
-      <ArrowLeft class="w-4 h-4" /> Kembali
-    </button>
+    <div class="flex items-center justify-between mb-4">
+      <button @click="router.push('/admin/students')" class="flex items-center gap-2 text-slate-500 hover:text-slate-800 text-sm transition-colors">
+        <ArrowLeft class="w-4 h-4" /> Kembali
+      </button>
+
+      <div class="flex gap-2" v-if="student && !loading">
+        <button v-if="student.prevStudentId" @click="goToStudent(student.prevStudentId)" class="btn-secondary btn-sm flex items-center gap-1">
+          <ChevronLeft class="w-4 h-4" /> Sebelumnya
+        </button>
+        <button v-if="student.nextStudentId" @click="goToStudent(student.nextStudentId)" class="btn-secondary btn-sm flex items-center gap-1">
+          Selanjutnya <ChevronRight class="w-4 h-4" />
+        </button>
+      </div>
+    </div>
 
     <div v-if="loading" class="text-center py-20 text-slate-400">Memuat data siswa...</div>
     <div v-else-if="error" class="bg-red-50 text-red-600 px-4 py-3 rounded-xl text-sm">{{ error }}</div>
