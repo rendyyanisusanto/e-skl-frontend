@@ -71,7 +71,7 @@ const loadStudents = async () => {
     })
     
     // Process student requirements into checkboxes map
-    students.value = res.data.data
+    students.value = res.data.data.data || []
     const cbMap = {}
     students.value.forEach(s => {
       cbMap[s.id] = {}
