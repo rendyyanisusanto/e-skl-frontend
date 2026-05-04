@@ -25,7 +25,7 @@ const emptyForm = () => ({ graduation_period_id: '', class_id: '', major_id: '',
 const form = ref(emptyForm())
 
 // Import modal
-const showImport = ref(false); const importing = ref(false); const importPeriodId = ref(''); const importFile = ref(null); const importResult = ref(null)
+const showImport = ref(false); const importing = ref(false); const importPeriodId = ref(''); const importClassId = ref(''); const importMajorId = ref(''); const importFile = ref(null); const importResult = ref(null)
 
 const load = async () => {
   loading.value = true
@@ -85,6 +85,8 @@ const handleImport = async () => {
   const fd = new FormData()
   fd.append('file', importFile.value)
   fd.append('graduation_period_id', importPeriodId.value)
+  if (importClassId.value) fd.append('class_id', importClassId.value)
+  if (importMajorId.value) fd.append('major_id', importMajorId.value)
   try { const r = await importStudents(fd); importResult.value = r.data.data; load() }
   catch (e) { error.value = getErrorMessage(e) } finally { importing.value = false }
 }
@@ -307,11 +309,27 @@ onMounted(async () => {
             <option v-for="p in periods" :key="p.id" :value="p.id">{{ p.name }}</option>
           </select>
         </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="label">Kelas</label>
+            <select v-model="importClassId" class="input">
+              <option value="">Pilih Kelas</option>
+              <option v-for="c in classes" :key="c.id" :value="c.id">{{ c.name }}</option>
+            </select>
+          </div>
+          <div>
+            <label class="label">Jurusan</label>
+            <select v-model="importMajorId" class="input">
+              <option value="">Pilih Jurusan</option>
+              <option v-for="m in majors" :key="m.id" :value="m.id">{{ m.code }} - {{ m.name }}</option>
+            </select>
+          </div>
+        </div>
         <div>
           <label class="label">File Excel <span class="text-red-500">*</span></label>
           <input type="file" accept=".xlsx,.xls" @change="e => importFile = e.target.files[0]" class="block w-full text-sm text-slate-500 mb-2" />
           <div class="flex flex-col gap-1">
-            <p class="text-xs text-slate-400">Format kolom: nis, nisn, name, gender, birth_place, birth_date, class_name, major_code, parent_name, address, phone, graduation_status</p>
+            <p class="text-xs text-slate-400">Format kolom: nis, nisn, name, gender, birth_place, birth_date, parent_name, address, phone</p>
             <a href="/format_import_siswa.xlsx" download class="text-xs text-indigo-600 font-medium hover:underline self-start">Unduh Template Format Excel</a>
           </div>
         </div>
